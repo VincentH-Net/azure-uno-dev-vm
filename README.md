@@ -1,14 +1,16 @@
 # azure-uno-dev-vm (WIP - eta before xmas)
 
-Quickly create secure, performant Windows virtual machines for developing Microsoft Azure and Uno Platform solutions with .NET
+> Quickly create secure, performant Windows Azure Virtual Machines for developing Microsoft Azure + Uno Platform solutions with .NET
 
 Developing on a desktop / laptop gives good performance and developer control at low cost, however:
-- Security in an enterprise context can be at risk, or strict general purpose security policies interfere with development tasks.
-- Stability tends to degrade over time as more software is installed, especially when researching and working on solutions with differing tech stacks.
-- Consistency across team members is hard to achieve, leading to "it works on my machine" issues and incomplete local testing.
 
-When developing Azure solutions, a good alternative is to use Windows virtual machines with Azure Virtual Desktop.
-- Performance is close to a fast desktop machine when using the right VM size - TODO see proof below
+- Security in an enterprise context can be at risk, or strict general purpose security policies interfere with development tasks.
+- Stability tends to degrade over time as more software is installed, especially when researching and working on solutions with different tech stacks.
+- Consistency across team members is hard to achieve, leading to "it works on my machine" issues and less local testing.
+
+When developing Azure solutions, a good alternative is to use Windows virtual machines with [Azure Virtual Desktop](https://azure.microsoft.com/en-us/products/virtual-desktop) and the [Windows App](https://learn.microsoft.com/en-us/windows-app/overview) remote desktop client on Mac or Windows machines (see [Selecting a VM service and RDP client in the changing Microsoft VM ecosystem](#selecting-a-vm-service-and-rdp-client-in-the-changing-microsoft-vm-ecosystem))
+
+- Performance is close to a fast desktop machine when using the right VM size (see [VM size performance](#vm-size-performance))
 - Developer control is unfettered
   - Each VM is personal
   - The dev has local admin rights on their VMs
@@ -18,60 +20,19 @@ When developing Azure solutions, a good alternative is to use Windows virtual ma
   - VMs are scheduled to be deallocated daily after working hours
   - Devs have control to deallocate their VMs earlier when not needed
 - Security is ensured without complexity
-  - Users authenticate to AZD and on the VM with Entra ID - use MFA, no local accounts
+  - Users authenticate to AVD and to the VM with Entra ID sso - use MFA, no local accounts
   - VMs are not directly accessible from the internet - only through Azure Virtual Desktop
-  - Aspire can be used to test on the VM, while only CI/CD has access to deploy to Azure.
+  - Aspire can be used to test the Azure solution on the VM, while only CI/CD has access to deploy to Azure.
 - Stability and consistency become easy
   - The consistent begin state provided by the known VM image allows to maintain a simple scripted installation of required software and configuration.
   The installation script is idempotent, so it can be re-run as needed to fix issues or to update the VM.
   - Making a new VM in Azure Virtual Desktop is quick and easy, allowing to start fresh when needed, or to create multiple machines per developer to work with products with differing tech stacks.
 
-This repository provides:
-- A PowerShell installation script to set up a Windows 11 VM for Azure and Uno Platform development with .NET
-- Instructions to create and configure secure Azure Virtual Desktop Windows VMs for development.
-- Guidance on selecting performant and cost effective Azure VM sizes for development.
+The installation script automates setting up your development VM; the following section lists what is installed and configured.
 
-## 1. Configure Azure Virtual Desktop
+## Automated development software installation and configuration
 
-TODO
-
-## 2. Configure Azure Windows VM
-
-## 3. Scripted development software install and configuration
-
-
-## VM size Performance
-
-To compare VM performance to a desktop dev machine, I timed builds (initial, incremental and rebuild) of the default Uno Platform solution wizard project (which targets .NET 10 Desktop, WASM, iOS and Android) in Visual Studio 2026.
-
-| Machine | Initial build | Minimal change build | Rebuild |
-| --- | --: | --: | --: |
-| Desktop | 1m 33s | 9s | 52s |
-| D8as_v6 | 2m 23s | 15s | 1m 12s |
-| F16as_v6 | 1m 48s | 11s | 57s |
-| FX4mds_v2 | 5m | 46s | 2m 36s |
-
-Desktop: AMD Ryzen 9 5950X, 16 cores, boosting ~4.35 GHz, 32 GB RAM, NVMe SSD
-
-When using a latest generation VM size D8as_v6, which has 4 real cores (8 logical) and 32 GB RAM with a premium NVMe SSD, 
-the build times prove to be CPU limited, and about 50% - 70% slower than the desktop.
-
-While the D series are general purpose, the F series are compute optimized - a better match for our use case.
-The D series simulate 2 logical cores for each physical one, but the F series maintain a 1 on 1 ratio.
-
-When using a F16as_v6 VM size, 16 cores, boosting ~3.7 GHz, Premium NVMe SSD, the perf is close to the desktop.
-
-Wnen using an FX series, which has higher clock CPU but less cores, the VM was 2.5 - 4 times slower than the desktop; clearly not a good fit.
-
-**Conclusion**: use a last generation F series with enough cores to get close to desktop perf.
-
-## Cost
-
-TODO
-
-## azure-uno-dev-vm-windows configuration
-
-The Powershell install script for this Windows 11 machine is idempotent (so you can run it as often as you want), uses mostly WinGet, and ensures below is installed and configured:
+The Powershell install script for the Windows 11 VM image is idempotent (so you can run it as often as you want), uses mostly WinGet, and ensures below is installed and configured:
 
 - PowerShell 7 or later (default for Windows 11 is still PowerShell 5)
 
@@ -115,14 +76,62 @@ The Powershell install script for this Windows 11 machine is idempotent (so you 
     - tooltip for dotnet that shows the .NET version - only when you type a dotnet command
   - Terminal Icons enabled
 
-## Secure with Entra ID and Azure Virtual Desktop
+## Getting started
 
-TODO
+Follow the instructions in [Azure-Virtual-Desktop.md](/src/Azure-Virtual-Desktop.md) to create and configure secure, performant Azure Virtual Desktop Windows 11 VMs for Azure and Uno Platform development with .NET
 
-## Azure Windows VM configuration
+## Research notes
 
-TODO
+Some learnings from the research that resulted in this repo
 
-## Azure Windows VM installation
+### Selecting a VM service and RDP client in the changing Microsoft VM ecosystem
 
-TODO
+> **TL;DR** The best fit for developing Azure solutions in VMs is [Azure Virtual Desktop](https://azure.microsoft.com/en-us/products/virtual-desktop) accessed via the [Windows App](https://learn.microsoft.com/en-us/windows-app/overview).
+
+#### RDP client options
+
+The [Windows App](https://learn.microsoft.com/en-us/windows-app/overview) is positioned to replace the older Microsoft remote-desktop clients, and offers better UX like dynamic resolution (no scrollbars or sizing) and multi-monitor, on multiple platforms including Windows and Mac. Development on the older Microsoft remote-desktop clients seems to have halted.
+
+#### VM service options
+
+- Plain [Azure VM](https://azure.microsoft.com/en-us/products/virtual-machines)'s with [Azure Bastion](https://learn.microsoft.com/en-us/azure/bastion/bastion-overview) for secure access
+
+  This has a subpar UX on Windows clients: the [Windows App](https://learn.microsoft.com/en-us/windows-app/overview) says _"Looking for connection to a remote PC? It's coming soon to Windows App"_ but it's not there yet and no ETA known. So you have to use the classic `MSTSC` client on Windows, which does not support dynamic resolution or multi-monitor (note that the Windows Remote Desktop app on Mac does support dynamic resolution - a weird state of affairs where Microsoft software has a better UX on Mac than on Windows).
+
+- [Microsoft Dev Box](https://azure.microsoft.com/en-us/products/dev-box) states _"Capabilities of Microsoft Dev Box are transitioning to Windows 365"_ and no longer accepts new customers
+
+- [Windows 365](https://www.microsoft.com/en-us/windows-365) cloud PC's
+
+  This is a viable option, but has limitations:
+  
+  - The VM's do not run in your solution's Azure tenant / Entra Id directory, which means for Azure development that you cannot use [managed identities](https://learn.microsoft.com/en-us/entra/identity/managed-identities-azure-resources/overview) to let your VM's securely access your Azure solution resources.
+  - Windows 365 offers limited options to increase cloud PC performance for a specific workload - only vCPU count / RAM size / storage size and GPU, but no options like VM CPU type / speed or disk performance, which are key for developer workload performance (TODO see performance results).
+
+- [Azure Virtual Desktop](https://azure.microsoft.com/en-us/products/virtual-desktop)
+
+  AVD adds a security and management layer on top of [Azure VM](https://azure.microsoft.com/en-us/products/virtual-machines)'s, while still exposing the full Azure VM management functionality and options. It adds Entra Id sso in the VM and VM start on connect, and is supported by the [Windows App](https://learn.microsoft.com/en-us/windows-app/overview) (inc. dynamic resolution and multiple monitor support).
+
+### VM size performance
+
+> **TL;DR** use a last generation F series VM size with the same number of cores as your reference machine to get comparable perf
+
+To compare VM performance to a desktop dev machine, I timed builds (initial, incremental and rebuild) of the default Uno Platform solution wizard project (which targets .NET 10 Desktop, WASM, iOS and Android) in Visual Studio 2026.
+
+| Machine | Initial build | Minimal change build | Rebuild |
+| --- | --: | --: | --: |
+| Desktop | 1m 33s | 9s | 52s |
+| D8as_v6 | 2m 23s | 15s | 1m 12s |
+| F16as_v6 | 1m 48s | 11s | 57s |
+| FX4mds_v2 | 5m | 46s | 2m 36s |
+
+Desktop: AMD Ryzen 9 5950X, 16 cores, boosting ~4.35 GHz, 32 GB RAM, NVMe SSD
+
+When using a latest generation VM size D8as_v6, which has 4 real cores (8 logical) and 32 GB RAM with a premium NVMe SSD, 
+the build times prove to be CPU limited, and about 50% - 70% slower than the desktop.
+
+While the D series are general purpose, the F series are compute optimized - a better match for our use case.
+The D series simulate 2 logical cores for each physical one, but the F series maintain a 1 on 1 ratio.
+
+When using a F16as_v6 VM size, 16 cores, boosting ~3.7 GHz, Premium NVMe SSD, the perf is close to the desktop.
+
+Wnen using an FX series, which has higher clock CPU but less cores, the VM was 2.5 - 4 times slower than the desktop; clearly not a good fit.
