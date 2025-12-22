@@ -1,21 +1,21 @@
 # Azure Virtual Desktop Configuration
 
-Developer VM's are Azure Virtual Machines, created by Azure Virtual Desktop (AZD).
+Developer VM's are Azure Virtual Machines, created by Azure Virtual Desktop (AVD).
 
 ## Security
 
 - VM's are personal.
-- Each VM is assigned to one specific Entra ID account via AZD Host Pools.
-- The Entra ID account is a member of the Developers security group and requires MFA. The Azure role assignments for the Developers group will be set in below steps, after the AZD Host Pool is created.
+- Each VM is assigned to one specific Entra ID account via AVD Host Pools.
+- The Entra ID account is a member of the Developers security group and requires MFA. The Azure role assignments for the Developers group will be set in below steps, after the AVD Host Pool is created.
 - VM's do not have public IP addresses, and can only be accessed via Azure Virtual Desktop.
 - VM's allow clipboard sharing between the local machine and the VM; all other device sharing options are left at their defaults (which is most secure).
 - VM's use Aspire to deploy locally on the machine; deployment to Azure resources is done via CI/CD
-- Each AZD Host Pool has a System-assigned managed identity, which has the `Desktop Virtualization Power On Contributor` role
+- Each AVD Host Pool has a System-assigned managed identity, which has the `Desktop Virtualization Power On Contributor` role
   on the Azure `Subscription` of the Host Pool (subscription level scope is required for the role, to start VM's in that Host Pool).
 
 ## Cost Management
 
-VM's are started by AZD when the user connects, and stopped at a daily scheduled time - or before that by the user via the VM blade in the Azure portal
+VM's are started by AVD when the user connects, and stopped at a daily scheduled time - or before that by the user via the VM blade in the Azure portal
 
 ## VM Configuration
 
@@ -27,7 +27,7 @@ VM's are started by AZD when the user connects, and stopped at a daily scheduled
 - OS Disk: 512 GiB Premium SSD
 - No Infrastructure Redundancy
 
-## AZD Host Pool Configuration
+## AVD Host Pool Configuration
 
 One Host Pool per Azure Region where developers are located. A Host Pool contains all Developer VM's in that region.
 **Note** that the Host Pool itself may be in a different region if host pools are not supported in the VM's region.
@@ -36,7 +36,7 @@ Steps to create a host pool in the Azure portal:
 
 1. Create a new default `Virtual network` in the `rg-dev-vm` resource group
    1. Region: set to the region closest to the users that will use the VM's - the VM's will be created in this region.
-   2. Name: `vnet-dev-azd-` plus a short id indicating the VM Azure region selected in the previous step, e.g. `sc` for Sweden Central, `-we` for Western Europe<br />
+   2. Name: `vnet-dev-avd-` plus a short id indicating the VM Azure region selected in the previous step, e.g. `sc` for Sweden Central, `-we` for Western Europe<br />
       This **VM Azure region id** will be used in later steps.
    3. In the `Tags` tab, add `environment` : `dev`
 2. Create a new `Host pool` resource in the `rg-dev-vm` resource group
