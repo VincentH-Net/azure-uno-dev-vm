@@ -1,9 +1,17 @@
-# azure-uno-dev-vm (WIP - eta before xmas)
+# azure-uno-dev-vm
 
 > Quickly create secure, performant Windows Azure Virtual Machines for developing Microsoft Azure + Uno Platform solutions with .NET
 
-Developing on a desktop / laptop gives good performance and developer control at low cost, however:
+What do you get?
+- Complete instructions to create Azure Virtual Desktop Windows 11 VMs - including multiple Azure regions
+- An easy to customize, idempotent installation script to set up a VM for Azure and Uno Platform development with .NET
+- Research notes on selecting the right VM size for near-desktop performance and for selecting the right Microsoft VM service and RDP client
 
+Read on for details, or [Get started now](#getting-started)
+
+## Why use Azure Virtual Desktop for Azure development?
+
+Developing on a desktop / laptop gives good performance and developer control at low cost, however:
 - Security in an enterprise context can be at risk, or strict general purpose security policies interfere with development tasks.
 - Stability tends to degrade over time as more software is installed, especially when researching and working on solutions with different tech stacks.
 - Consistency across team members is hard to achieve, leading to "it works on my machine" issues and less local testing.
@@ -20,7 +28,7 @@ When developing Azure solutions, a good alternative is to use Windows virtual ma
   - VMs are scheduled to be deallocated daily after working hours
   - Devs have control to deallocate their VMs earlier when not needed
 - Security is ensured without complexity
-  - Users authenticate to AVD and to the VM with Entra ID sso - use MFA, no local accounts
+  - Users authenticate to AVD and to the VM with Entra ID SSO - use MFA, no local accounts
   - VMs are not directly accessible from the internet - only through Azure Virtual Desktop
   - Aspire can be used to test the Azure solution on the VM, while only CI/CD has access to deploy to Azure.
 - Stability and consistency become easy
@@ -31,6 +39,8 @@ When developing Azure solutions, a good alternative is to use Windows virtual ma
 The installation script automates setting up your development VM; the following section lists what is installed and configured.
 
 ## Automated development software installation and configuration
+
+> Current version: 2025-12-23
 
 The Powershell install script for the Windows 11 VM image is idempotent (so you can run it as often as you want), uses mostly WinGet, and ensures below is installed and configured:
 
@@ -81,7 +91,7 @@ The Powershell install script for the Windows 11 VM image is idempotent (so you 
 - PowerShell profile configuration
   - .NET 10 CLI tab completion
   - AZ tab completion
-  - Custom Oh-My_POSH theme atomic-min-dotnet-git-az.omp with:  
+  - Custom Oh-My_POSH theme `atomic-min-dotnet-git-az` with:  
     - Simplified 2-line prompt based on atomic theme look, with full current path on the first prompt, plus the current Git branch (only when in a repo). The second line has the full console width available for what you type.
     - Tooltip for AZ that shows the current Entra directory name, Azure subscription name and user - only when you are typing an AZ command.
     - tooltip for dotnet that shows the .NET version - only when you type a dotnet command
@@ -90,6 +100,23 @@ The Powershell install script for the Windows 11 VM image is idempotent (so you 
 ## Getting started
 
 Follow the instructions in [Azure-Virtual-Desktop.md](/src/Azure-Virtual-Desktop.md) to create and configure secure, performant Azure Virtual Desktop Windows 11 VMs for Azure and Uno Platform development with .NET
+
+
+## Customizing
+
+The installation script files are in the [src/azure-uno-dev-vm-windows](src/azure-uno-dev-vm-windows) folder;
+you can modify them to suit your needs:
+
+| File | What can be modified |
+| --- | --- |
+| [Install.ps1](src/azure-uno-dev-vm-windows/Install.ps1) | Which software to install, Uno.Check parameters to select supported target platforms |
+| [.vsconfig](src/azure-uno-dev-vm-windows/.vsconfig) | Visual Studio workloads and extensions to install. You can export this file from an existing installation with the Visual Studio Installer. |
+| [vscode-extensions.txt](src/azure-uno-dev-vm-windows/vscode-extensions.txt) | VS Code extensions to install |
+| [configure-powershell-profile.ps1](src/azure-uno-dev-vm-windows/configure-powershell-profile.ps1) | PowerShell profile configuration |
+| [atomic-min-dotnet-git-az.omp.json](src/azure-uno-dev-vm-windows/atomic-min-dotnet-git-az.omp.json) | Oh-My-POSH theme customization |
+
+After modifying installation script files, replace the [src/azure-uno-dev-vm-windows.zip](src/azure-uno-dev-vm-windows.zip) file with the zipped [src/azure-uno-dev-vm-windows](src/azure-uno-dev-vm-windows) folder. 
+The [developer VM readme](/src/azure-uno-dev-vm-windows/Readme.md) contains a link to this ZIP file; the developer downloads this file to the VM to install it.
 
 ## Research notes
 
@@ -120,11 +147,11 @@ The [Windows App](https://learn.microsoft.com/en-us/windows-app/overview) is pos
 
 - [Azure Virtual Desktop](https://azure.microsoft.com/en-us/products/virtual-desktop)
 
-  AVD adds a security and management layer on top of [Azure VM](https://azure.microsoft.com/en-us/products/virtual-machines)'s, while still exposing the full Azure VM management functionality and options. It adds Entra Id sso in the VM and VM start on connect, and is supported by the [Windows App](https://learn.microsoft.com/en-us/windows-app/overview) (inc. dynamic resolution and multiple monitor support).
+  AVD adds a security and management layer on top of [Azure VM](https://azure.microsoft.com/en-us/products/virtual-machines)'s, while still exposing the full Azure VM management functionality and options. It adds Entra Id SSO in the VM and VM start on connect, and is supported by the [Windows App](https://learn.microsoft.com/en-us/windows-app/overview) (inc. dynamic resolution and multiple monitor support).
 
 ### VM size performance
 
-> **TL;DR** use a last generation F series VM size with the same number of cores as your reference machine to get comparable perf
+> **TL;DR** use a last generation F series VM size, with the same number of cores as your reference machine, to get comparable perf
 
 To compare VM performance to a desktop dev machine, I timed builds (initial, incremental and rebuild) of the default Uno Platform solution wizard project (which targets .NET 10 Desktop, WASM, iOS and Android) in Visual Studio 2026.
 
