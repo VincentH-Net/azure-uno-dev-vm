@@ -1,0 +1,98 @@
+{
+  "$schema": "https://raw.githubusercontent.com/JanDeDobbeleer/oh-my-posh/main/themes/schema.json",
+  "version": 3,
+  "final_space": false,
+
+  "tooltips_action":"prepend",
+  "tooltips": [
+    {
+      "type": "az",
+      "tips": ["az", "azd"],
+      "style": "diamond",
+      "leading_diamond": "",
+      "trailing_diamond": "",
+      "foreground": "#ffffff",
+      "background": "#2075B8",
+      "template": "  {{ .TenantDisplayName }} | {{ .Name }} | {{ .User.Name }} ",
+      "options": {
+        "source": "cli"
+      }
+    },
+    {
+      "type": "dotnet",
+      "tips": ["dotnet", "aspire", "nuget"],
+      "style":"diamond",
+      "leading_diamond": "",
+      "trailing_diamond": "",
+      "foreground": "#ffffff",
+      "background": "#6A2274",
+      "template": "  {{ if .SDKVersion }}{{ .SDKVersion }}{{ else }}{{ .Full }}{{ end }} ",
+      "options": {
+        "fetch_sdk_version": true,
+        "cache_duration": "none"
+      }
+    }
+  ],
+
+  "blocks": [
+    {
+      "type": "prompt",
+      "alignment": "left",
+      "segments": [
+        {
+          "type": "text",
+          "style": "plain",
+          "foreground": "#21c7c7",
+          "template": "╭─"
+        },
+        {
+          "type": "path",
+          "style": "powerline",
+          "leading_powerline_symbol": "",
+          "powerline_symbol": "",
+          "foreground": "#000000",
+          "background": "#61AFEF",
+          "template": "{{ .Location }}",
+          "options": {
+            "style":"full",
+            "mapped_locations_enabled": false,
+            "mapped_locations": {
+              "~/Downloads": "⬇️"
+            }
+          }
+        },
+        {
+          "type": "git",
+          "style": "powerline",
+          "powerline_symbol": "",
+          "foreground": "#193549",
+          "background": "#FFD300",
+          "template": "  {{ .HEAD }} ",
+          "options": {
+            "fetch_status": false,
+            "fetch_upstream_icon": false
+          }
+        }
+      ]
+    },
+    {
+      "type": "prompt",
+      "alignment": "left",
+      "newline": true,
+      "segments": [
+        {
+          "type": "text",
+          "style": "plain",
+          "foreground": "#21c7c7",
+          "template": "╰─"
+        },
+        {
+          "type": "text",
+          "style": "plain",
+          "foreground": "#e0f8ff",
+          "template": "❯ "
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,3 @@
+github.copilot
+ms-dotnettools.csdevkit
+ms-vscode.powershell
