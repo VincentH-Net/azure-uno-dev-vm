@@ -252,7 +252,6 @@ function Install-DockerDesktop {
     }
     else {
         Write-Warning "Docker Desktop installed but docker.exe not yet on PATH for this session. Open a new terminal session if you need Docker on PATH."
-        #TODO: do we need this test for Aspire?
     }
 }
 

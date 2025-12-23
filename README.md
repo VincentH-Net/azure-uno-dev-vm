@@ -7,6 +7,9 @@ What do you get?
 - An easy to customize, idempotent installation script to set up a VM for Azure and Uno Platform development with .NET
 - Research notes on selecting the right VM size for near-desktop performance and for selecting the right Microsoft VM service and RDP client
 
+![Windows App with Azure VM with Visual Studio 2026 with Uno Platform, VS Code with terminal icons, prompt with path and branch, dotnet 10 tooltip and tab completion, Windows terminal with az tooltip and tab completion](img/vm-screenshot-vs-vscode-terminal.png)<br />
+_Windows App with Azure VM with Visual Studio 2026 with Uno Platform, VS Code with terminal icons, prompt with path and branch, dotnet 10 tooltip and tab completion, Windows terminal with az tooltip and tab completion, and more..._
+
 Read on for details, or [Get started now](#getting-started)
 
 ## Why use Azure Virtual Desktop for Azure development?
@@ -143,7 +146,7 @@ The [Windows App](https://learn.microsoft.com/en-us/windows-app/overview) is pos
   This is a viable option, but has limitations:
   
   - The VM's do not run in your solution's Azure tenant / Entra Id directory, which means for Azure development that you cannot use [managed identities](https://learn.microsoft.com/en-us/entra/identity/managed-identities-azure-resources/overview) to let your VM's securely access your Azure solution resources.
-  - Windows 365 offers limited options to increase cloud PC performance for a specific workload - only vCPU count / RAM size / storage size and GPU, but no options like VM CPU type / speed or disk performance, which are key for developer workload performance (TODO see performance results).
+  - Windows 365 offers limited options to increase cloud PC performance for a specific workload - only vCPU count / RAM size / storage size and GPU, but no options like VM CPU type / speed or disk performance, which are key for developer workload performance (see [VM size performance](#vm-size-performance)).
 
 - [Azure Virtual Desktop](https://azure.microsoft.com/en-us/products/virtual-desktop)
 
