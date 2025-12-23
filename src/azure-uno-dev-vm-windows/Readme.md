@@ -5,7 +5,7 @@ Prerequisites:
 - A native Entra ID account in the solution directory
 - This account is member of the Developers security group in the solution directory
 - A GitHub account
-- A personal AZD Sesion Host (a VM) has been created for you in the AZD Host Pool for the Azure region closest to you
+- A personal AVD Sesion Host (a VM) has been created for you in the AZD Host Pool for the Azure region closest to you
 - Your Entra ID account has been assigned to this Session Host
 
 Steps:
