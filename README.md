@@ -3,7 +3,7 @@
 > Quickly create secure, performant Windows Azure Virtual Machines for developing Microsoft Azure + Uno Platform solutions with .NET
 
 What do you get?
-- Complete instructions to create Azure Virtual Desktop Windows 11 VMs - including multiple Azure regions
+- Complete instructions to create secure, fast Azure Virtual Desktop Windows 11 VMs - including multiple Azure regions
 - An easy to customize, idempotent installation script to set up a VM for Azure and Uno Platform development with .NET
 - Research notes on selecting the right VM size for near-desktop performance and for selecting the right Microsoft VM service and RDP client
 
@@ -109,7 +109,7 @@ you can modify them to suit your needs:
 
 | File | What can be modified |
 | --- | --- |
-| [Install.ps1](src/azure-uno-dev-vm-windows/Install.ps1) | Which software to install, Uno.Check parameters to select supported target platforms |
+| [Install.ps1](src/azure-uno-dev-vm-windows/install.ps1) | Which software to install, Uno.Check parameters to select supported target platforms |
 | [.vsconfig](src/azure-uno-dev-vm-windows/.vsconfig) | Visual Studio workloads and extensions to install. You can export this file from an existing installation with the Visual Studio Installer. |
 | [vscode-extensions.txt](src/azure-uno-dev-vm-windows/vscode-extensions.txt) | VS Code extensions to install |
 | [configure-powershell-profile.ps1](src/azure-uno-dev-vm-windows/configure-powershell-profile.ps1) | PowerShell profile configuration |
