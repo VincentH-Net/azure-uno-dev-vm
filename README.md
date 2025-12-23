@@ -52,8 +52,19 @@ The Powershell install script for the Windows 11 VM image is idempotent (so you 
 - Aspire CLI
 
 - Visual Studio Enterprise 2026 with required workloads and extensions (uses .vsconfig, easy to modify)
+  - Workloads:
+    - ASP.NET and web development
+    - Azure and AI development
+    - .NET Multi-platform App UI development
+    - .NET desktop development
+  - Extensions:
+    - Uno Platform
 
 - Visual Studio Code with extensions (uses a text file with extensions, easy to modify)
+  - Extensions:
+    - GitHub CoPilot
+    - C# Dev Kit
+    - PowerShell
 
 - Uno.Check dotnet tool.  
   The tool is installed and ensures all prerequisites for targets Desktop, WASM, iOS and Android (easy to modify with command-line parameters)
