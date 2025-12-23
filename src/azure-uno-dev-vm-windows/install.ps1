@@ -194,7 +194,7 @@ function Expand-PartitionToMax {
                                                 -ErrorAction Stop
 
         if ($partition.Size -ge $supported.SizeMax) {
-            Write-Host "Partition for drive $DriveLetter`: already at maximum size. No action needed."
+            Write-Host "Partition for drive $DriveLetter`: already at maximum size. skipping."
             return
         }
 
@@ -449,13 +449,17 @@ Install-AndroidSdkLicenses -SdkRoot "C:\Program Files (x86)\Android\android-sdk"
 
 # Oh-My_POSH powershell prompt
 Install-WingetPackage 'JanDeDobbeleer.OhMyPosh' -scope 'user'
-oh-my-posh font install CascadiaMono
+if ($null -ne $global:LASTEXITCODE) {
+    oh-my-posh font install CascadiaMono
+    $global:RebootNeeded = true # Font install needs a restart before VS and VS Code can see it
+}
 
 Install-TerminalIcons
 
 # PowerShell profile configuration
 & (Join-Path $PSScriptRoot 'configure-powershell-profile.ps1')
 
+Write-Host ''
 Write-Host 'Development machine install completed.'
 Write-Host ''
 Write-Host 'To configure Windows Terminal font to display icons:'

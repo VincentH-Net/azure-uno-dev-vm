@@ -6,6 +6,7 @@ Set-StrictMode -Version Latest
 #      $PROFILE.CurrentUserAllHosts
 #      $PROFILE.AllUsersAllHosts
 $profilePath = $PROFILE
+Write-Host ''
 Write-Host "Using profile: $profilePath"
 
 # Ensure the directory and file exist
